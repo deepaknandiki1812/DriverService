@@ -1,12 +1,17 @@
 package com.example.Driver.controller;
 
+import java.io.File;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Driver.DTO.DriverDTO;
+import com.example.Driver.Entity.Driver;
 import com.example.Driver.service.Driverservice;
 
 import io.swagger.annotations.*;
@@ -76,7 +81,10 @@ public class Drivercontroller {
 	@PostMapping("/driver")
 	public ResponseEntity<DriverDTO> saveDriver(
 			@ApiParam(value = "Driver information to save", required = true) @RequestBody DriverDTO driverDTO) {
-
+		
+		 
+	        System.out.println("Received Join Date: " + driverDTO.getJoindate());
+	        System.out.println("Received Vehicle Type: " + driverDTO.getVehicletype());
 		DriverDTO result = driverservice.save(driverDTO);
 		if (result != null) {
 			return ResponseEntity.status(HttpStatus.CREATED).body(result); // 201 Created
@@ -84,6 +92,7 @@ public class Drivercontroller {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Error
 		}
 	}
+	
 
 	/**
 	 * Endpoint to retrieve a list of all drivers.

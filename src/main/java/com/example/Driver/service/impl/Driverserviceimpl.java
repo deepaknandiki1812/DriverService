@@ -107,6 +107,13 @@ public class Driverserviceimpl implements Driverservice{
 		        existing.setEmail(driverDTO.getEmail());
 		        existing.setAddress(driverDTO.getAddress());
 		        existing.setVehicleNumber(driverDTO.getVehicleNumber());
+		        existing.setImage(driverDTO.getImage());
+		        existing.setJoindate(driverDTO.getJoindate());
+		        existing.setLicence(driverDTO.getLicence());
+		        existing.setStatus(driverDTO.getStatus());
+		        existing.setVehicletype(driverDTO.getVehicletype());
+		        
+		        
 		        driverrepository.save(existing);
 		        return driverDTO;
 		    } else {
@@ -116,4 +123,6 @@ public class Driverserviceimpl implements Driverservice{
 	
 
 	}
+
+	
 }
