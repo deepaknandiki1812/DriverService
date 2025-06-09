@@ -52,7 +52,7 @@ public class Drivercontroller {
 	@PutMapping("/driver")
 	public ResponseEntity<DriverDTO> updateDriver(
 	        @ApiParam(value = "Updated driver data", required = true) @RequestBody DriverDTO driverDTO) {
-
+		   
 	    DriverDTO updatedDriver = driverservice.update(driverDTO);
 
 	    if (updatedDriver != null) {
