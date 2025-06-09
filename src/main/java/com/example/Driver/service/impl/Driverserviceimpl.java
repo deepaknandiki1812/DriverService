@@ -1,10 +1,15 @@
 package com.example.Driver.service.impl;
 
+import java.io.IOException;
+import java.nio.file.*;
+import java.time.LocalDate;
+import java.util.UUID;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Driver.DTO.DriverDTO;
 import com.example.Driver.Entity.Driver;
@@ -34,13 +39,57 @@ public class Driverserviceimpl implements Driverservice{
 	 * @return The saved {@link Driver} entity.
 	 */
 	@Override
-	public DriverDTO save(DriverDTO driverDTO) {
+	public DriverDTO save(DriverDTO driverDTO, MultipartFile image, MultipartFile licence) throws IOException {
 				
-		Driver driver =this.driverMapper.dtotoEntity(driverDTO);
-		driver=driverrepository.save(driver);
-		driverDTO=this.driverMapper.enitytoDto(driver);
-		return driverDTO;
+	    Driver entity = new Driver();
+	    // Copy fields from DTO
+	    entity.setName(driverDTO.getName());
+	    entity.setEmail(driverDTO.getEmail());
+	    entity.setAddress(driverDTO.getAddress());
+	    entity.setVehicleNumber(driverDTO.getVehicleNumber());
+	    entity.setVehicletype(driverDTO.getVehicletype());
+	    entity.setJoindate(driverDTO.getJoindate());
+	    
+	    
+	    entity.setStatus(driverDTO.getStatus());
+
+	    // ✅ Save files and set file paths
+	    if (image != null && !image.isEmpty()) {
+	        String imagePath = saveFile(image);
+	        entity.setImagepath(imagePath); // this sets driver_image column
+	    }
+
+	    if (licence != null && !licence.isEmpty()) {
+	        String licencePath = saveFile(licence);
+	        entity.setLicencepath(licencePath); // this sets driver_licence column
+	    }
+	    
+	    System.out.println("Image path to save: " + entity.getImagepath());
+	    System.out.println("Licence path to save: " + entity.getLicencepath());
+
+
+	    // ✅ Save to DB
+	    Driver saved = driverrepository.save(entity);
+
+	    // Return response DTO (optional)
+	    DriverDTO result = new DriverDTO();
+	    result.setId(saved.getId());
+	    result.setName(saved.getName());
+	    result.setEmail(saved.getEmail());
+	   
+	    return result;
 	}
+
+	private String saveFile(MultipartFile file) throws IOException {
+	    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+	    Path uploadDir = Paths.get("uploads"); // Folder inside your project or custom path
+	    Files.createDirectories(uploadDir);
+	    Path filePath = uploadDir.resolve(fileName);
+	    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+	    return filePath.toString(); // Store this in DB
+	}
+
+
 	/**
 	 * Retrieves all driver entities from the repository and maps them to DTOs.
 	 *
@@ -107,9 +156,9 @@ public class Driverserviceimpl implements Driverservice{
 		        existing.setEmail(driverDTO.getEmail());
 		        existing.setAddress(driverDTO.getAddress());
 		        existing.setVehicleNumber(driverDTO.getVehicleNumber());
-		        existing.setImage(driverDTO.getImage());
+		        
 		        existing.setJoindate(driverDTO.getJoindate());
-		        existing.setLicence(driverDTO.getLicence());
+		        
 		        existing.setStatus(driverDTO.getStatus());
 		        existing.setVehicletype(driverDTO.getVehicletype());
 		        

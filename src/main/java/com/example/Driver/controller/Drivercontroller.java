@@ -1,8 +1,6 @@
 package com.example.Driver.controller;
 
-import java.io.File;
-import java.sql.Timestamp;
-import java.time.LocalDate;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -11,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Driver.DTO.DriverDTO;
-import com.example.Driver.Entity.Driver;
 import com.example.Driver.service.Driverservice;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.annotations.*;
 
@@ -26,14 +24,16 @@ import io.swagger.annotations.*;
 public class Drivercontroller {
 
 	private final Driverservice driverservice;
+	 private final ObjectMapper objectMapper;
 
 	/**
 	 * Constructor to inject the driver service.
 	 *
 	 * @param driverservice the service handling business logic for drivers
 	 */
-	public Drivercontroller(Driverservice driverservice) {
+	public Drivercontroller(Driverservice driverservice, ObjectMapper objectMapper) {
 		this.driverservice = driverservice;
+		 this.objectMapper = objectMapper;
 	}
 	/**
 	 * Updates an existing driver's details.
@@ -78,20 +78,37 @@ public class Drivercontroller {
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Driver created successfully", response = DriverDTO.class),
 			@ApiResponse(code = 500, message = "Internal server error") })
-	@PostMapping("/driver")
-	public ResponseEntity<DriverDTO> saveDriver(
-			@ApiParam(value = "Driver information to save", required = true) @RequestBody DriverDTO driverDTO) {
-		
-		 
-	        System.out.println("Received Join Date: " + driverDTO.getJoindate());
-	        System.out.println("Received Vehicle Type: " + driverDTO.getVehicletype());
-		DriverDTO result = driverservice.save(driverDTO);
-		if (result != null) {
-			return ResponseEntity.status(HttpStatus.CREATED).body(result); // 201 Created
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Error
-		}
-	}
+	 @PostMapping(value = "/driver", consumes = {"multipart/form-data"})
+    public ResponseEntity<?> uploadDriver(
+            @RequestPart("driver") String driverJson,
+            @RequestPart("image") MultipartFile image,
+            @RequestPart(value = "licence", required = false) MultipartFile licence) {
+
+        try {
+            // Convert JSON string to DriverDTO object
+            DriverDTO driverDTO = objectMapper.readValue(driverJson, DriverDTO.class);
+
+            System.out.println("Vehicle Type: " + driverDTO.getVehicletype());
+            System.out.println("Join Date: " + driverDTO.getJoindate());
+
+            System.out.println("Image filename: " + image.getOriginalFilename());
+            System.out.println("Licence filename: " + licence.getOriginalFilename());
+
+            // Call your service to save DriverDTO + files
+            DriverDTO result = driverservice.save(driverDTO, image, licence);
+
+            if (result != null) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(result);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
+        }
+    }
+
 	
 
 	/**

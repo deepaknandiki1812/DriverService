@@ -14,9 +14,9 @@ public class DriverDTO {
 	private String address;
 	private String vehicleNumber;
 	private Timestamp joindate;
-	private String image;
+	
 	private String vehicletype;
-	private String licence;
+	
 	private Boolean status;
 	public int getId() {
 		return id;
@@ -54,24 +54,14 @@ public class DriverDTO {
 	public void setJoindate(Timestamp joindate) {
 		this.joindate = joindate;
 	}
-	public String getImage() {
-		return image;
-	}
-	public void setImage(String image) {
-		this.image = image;
-	}
+
 	public String getVehicletype() {
 		return vehicletype;
 	}
 	public void setVehicletype(String vehicletype) {
 		this.vehicletype = vehicletype;
 	}
-	public String getLicence() {
-		return licence;
-	}
-	public void setLicence(String licence) {
-		this.licence = licence;
-	}
+
 	public Boolean getStatus() {
 		return status;
 	}

@@ -40,14 +40,14 @@ public class Driver {
 	@Column(name="Driver_JoinDate")
 	private Timestamp joindate;
 	
-	@Column(name="Driver_Image")
-	private String image;
+	@Column(name="Driver_ImagePath")
+	private String imagepath;
 	
 	@Column(name="Driver_Vehicletype")
 	private String vehicletype;
 	
-	@Column(name="Driver_Licence")
-	private String licence;
+	@Column(name="Driver_LicencePath")
+	private String licencepath;
 	
 	
 	@Column(name="Driver_Status")
@@ -114,13 +114,13 @@ public class Driver {
 	}
 
 
-	public String getImage() {
-		return image;
+	public String getImagepath() {
+		return imagepath;
 	}
 
 
-	public void setImage(String image) {
-		this.image = image;
+	public void setImagepath(String imagepath) {
+		this.imagepath = imagepath;
 	}
 
 
@@ -134,13 +134,13 @@ public class Driver {
 	}
 
 
-	public String getLicence() {
-		return licence;
+	public String getLicencepath() {
+		return licencepath;
 	}
 
 
-	public void setLicence(String licence) {
-		this.licence = licence;
+	public void setLicencepath(String licencepath) {
+		this.licencepath = licencepath;
 	}
 
 
