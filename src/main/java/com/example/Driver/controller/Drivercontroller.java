@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.Driver.DTO.DriverDTO;
 import com.example.Driver.service.Driverservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.MediaType;
 
 import io.swagger.annotations.*;
 
@@ -108,8 +109,12 @@ public class Drivercontroller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
         }
     }
-
 	
+	
+	
+	
+//	 System.out.println("Image: " + (image != null ? image.getOriginalFilename() : "No image uploaded"));
+//   System.out.println("Licence: " + (licence != null ? licence.getOriginalFilename() : "No licence uploaded"));
 
 	/**
 	 * Endpoint to retrieve a list of all drivers.

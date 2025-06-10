@@ -26,9 +26,9 @@ public class DriverMapper {
 		driver.setId(driverDTO.getId());
 		driver.setName(driverDTO.getName());
 		driver.setVehicleNumber(driverDTO.getVehicleNumber());
-		
+//		driver.setImagepath(driverDTO.getImagepath());
 		driver.setJoindate(driverDTO.getJoindate());
-		
+//		driver.setLicencepath(driverDTO.getLicencepath());
 		driver.setStatus(driverDTO.getStatus());
 		driver.setVehicletype(driverDTO.getVehicletype());
 		
@@ -52,12 +52,11 @@ public class DriverMapper {
 		driverDTO.setId(driver.getId());
 		driverDTO.setAddress(driver.getAddress());
 		driverDTO.setEmail(driver.getEmail());
-		driverDTO.setId(driver.getId());
 		driverDTO.setName(driver.getName());
 		driverDTO.setVehicleNumber(driver.getVehicleNumber());
-		
+//		driverDTO.setImagepath(driver.getImagepath());
 		driverDTO.setJoindate(driver.getJoindate());
-		
+//		driverDTO.setLicencepath(driver.getLicencepath());
 		driverDTO.setStatus(driver.getStatus());
 		driverDTO.setVehicletype(driver.getVehicletype());
 		

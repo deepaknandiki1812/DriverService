@@ -2,6 +2,7 @@ package com.example.Driver.service.impl;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.List;
@@ -11,9 +12,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.Driver.DTO.DocumentDTO;
 import com.example.Driver.DTO.DriverDTO;
+import com.example.Driver.Entity.Document;
 import com.example.Driver.Entity.Driver;
 import com.example.Driver.Mappers.DriverMapper;
+import com.example.Driver.repository.Documentrepository;
 import com.example.Driver.repository.Driverrepository;
 import com.example.Driver.service.Driverservice;
 
@@ -21,10 +25,12 @@ import com.example.Driver.service.Driverservice;
 public class Driverserviceimpl implements Driverservice{
 	private Driverrepository driverrepository;
 	private DriverMapper driverMapper;
+	private Documentrepository documentrepository;
 	
-	public Driverserviceimpl(Driverrepository driverrepository,DriverMapper driverMapper) {
+	public Driverserviceimpl(Driverrepository driverrepository,DriverMapper driverMapper , Documentrepository documentrepository) {
 		this.driverrepository=driverrepository;
 		this.driverMapper=driverMapper;
+		this.documentrepository=documentrepository;
 	}
 
 	/**
@@ -49,28 +55,34 @@ public class Driverserviceimpl implements Driverservice{
 	    entity.setVehicleNumber(driverDTO.getVehicleNumber());
 	    entity.setVehicletype(driverDTO.getVehicletype());
 	    entity.setJoindate(driverDTO.getJoindate());
+
 	    
 	    
 	    entity.setStatus(driverDTO.getStatus());
-
+	    String imagePath="";
+	    String licencePath ="";
 	    // ✅ Save files and set file paths
 	    if (image != null && !image.isEmpty()) {
-	        String imagePath = saveFile(image);
-	        entity.setImagepath(imagePath); // this sets driver_image column
+	         imagePath = saveFile(image);
+	       
+	      
 	    }
 
 	    if (licence != null && !licence.isEmpty()) {
-	        String licencePath = saveFile(licence);
-	        entity.setLicencepath(licencePath); // this sets driver_licence column
+	         licencePath = saveFile(licence);
+	        // this sets driver_licence column
 	    }
 	    
-	    System.out.println("Image path to save: " + entity.getImagepath());
-	    System.out.println("Licence path to save: " + entity.getLicencepath());
+	
 
 
 	    // ✅ Save to DB
 	    Driver saved = driverrepository.save(entity);
-
+	    createdocument (image , imagePath , saved.getId());
+	    createdocument (licence , licencePath , saved.getId());
+	    
+	    
+	
 	    // Return response DTO (optional)
 	    DriverDTO result = new DriverDTO();
 	    result.setId(saved.getId());
@@ -78,6 +90,21 @@ public class Driverserviceimpl implements Driverservice{
 	    result.setEmail(saved.getEmail());
 	   
 	    return result;
+	}
+
+	private void createdocument(MultipartFile file, String path, int id) {
+		Document document = new Document();
+	    
+	    document.setFileext(file.getContentType());
+	    document.setFileloc(path);
+	    document.setFilename(file.getOriginalFilename());
+	    document.setFilesize(file.getSize());
+	    document.setUploaded_by("driver");
+	    document.setUploaded_id(id);
+	    Instant instant = Instant.now();
+	    document.setUploaded_time(instant);
+	
+	  Document savedDocument = documentrepository.save(document);
 	}
 
 	private String saveFile(MultipartFile file) throws IOException {
@@ -156,9 +183,9 @@ public class Driverserviceimpl implements Driverservice{
 		        existing.setEmail(driverDTO.getEmail());
 		        existing.setAddress(driverDTO.getAddress());
 		        existing.setVehicleNumber(driverDTO.getVehicleNumber());
-		        
+//		        existing.setImagepath(driverDTO.getImagepath());
 		        existing.setJoindate(driverDTO.getJoindate());
-		        
+//		        existing.setLicencepath(driverDTO.getLicencepath());
 		        existing.setStatus(driverDTO.getStatus());
 		        existing.setVehicletype(driverDTO.getVehicletype());
 		        
