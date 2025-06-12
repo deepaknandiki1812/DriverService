@@ -18,7 +18,7 @@ public interface Driverservice {
 
 	boolean delete(int id);
 
-	DriverDTO update(DriverDTO driverDTO);
+	
 
 	/**
 	 * Saves a new driver to the system.
@@ -32,6 +32,10 @@ public interface Driverservice {
 	 * @return The saved {@link Driver} entity.
 	 */
 	DriverDTO save(DriverDTO driverDTO, MultipartFile image, MultipartFile licence)throws IOException ;
+
+	DriverDTO update(DriverDTO driverDTO);
+
+	
 
 
 

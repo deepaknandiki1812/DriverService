@@ -47,7 +47,7 @@ public class Driverserviceimpl implements Driverservice{
 	@Override
 	public DriverDTO save(DriverDTO driverDTO, MultipartFile image, MultipartFile licence) throws IOException {
 				
-	    Driver entity = new Driver();
+	    DriverDTO entity = new DriverDTO();
 	    // Copy fields from DTO
 	    entity.setName(driverDTO.getName());
 	    entity.setEmail(driverDTO.getEmail());
@@ -55,9 +55,8 @@ public class Driverserviceimpl implements Driverservice{
 	    entity.setVehicleNumber(driverDTO.getVehicleNumber());
 	    entity.setVehicletype(driverDTO.getVehicletype());
 	    entity.setJoindate(driverDTO.getJoindate());
-
-	    
-	    
+	    entity.setImagename(driverDTO.getImagename());
+	    entity.setLicencename(driverDTO.getLicencename());
 	    entity.setStatus(driverDTO.getStatus());
 	    String imagePath="";
 	    String licencePath ="";
@@ -176,16 +175,18 @@ public class Driverserviceimpl implements Driverservice{
 	}
 
 	@Override
-	public DriverDTO update(DriverDTO driverDTO) {
+	public
+	DriverDTO update(DriverDTO driverDTO){
 		  Driver existing = driverrepository.findById(driverDTO.getId()).orElse(null);
 		    if (existing != null) {
+		    	existing.setId(driverDTO.getId());
 		        existing.setName(driverDTO.getName());
 		        existing.setEmail(driverDTO.getEmail());
 		        existing.setAddress(driverDTO.getAddress());
 		        existing.setVehicleNumber(driverDTO.getVehicleNumber());
-//		        existing.setImagepath(driverDTO.getImagepath());
+		        
 		        existing.setJoindate(driverDTO.getJoindate());
-//		        existing.setLicencepath(driverDTO.getLicencepath());
+
 		        existing.setStatus(driverDTO.getStatus());
 		        existing.setVehicletype(driverDTO.getVehicletype());
 		        

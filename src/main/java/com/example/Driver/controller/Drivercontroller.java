@@ -51,17 +51,35 @@ public class Drivercontroller {
 	    @ApiResponse(code = 404, message = "Driver not found")
 	})
 	@PutMapping("/driver")
-	public ResponseEntity<DriverDTO> updateDriver(
-	        @ApiParam(value = "Updated driver data", required = true) @RequestBody DriverDTO driverDTO) {
-		   
-	    DriverDTO updatedDriver = driverservice.update(driverDTO);
+	public ResponseEntity<?> updateDriver(
+		     @RequestPart("driver") String driverJson,
+		     @RequestPart(value = "image", required = false) MultipartFile image,
+	            @RequestPart(value = "licence", required = false) MultipartFile licence) {
 
-	    if (updatedDriver != null) {
-	        return ResponseEntity.ok(updatedDriver); // 200 OK
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 404 Not Found
+	        try {
+	            // Convert JSON string to DriverDTO object
+	            DriverDTO driverDTO = objectMapper.readValue(driverJson, DriverDTO.class);
+
+	            System.out.println("Vehicle Type: " + driverDTO.getVehicletype());
+	            System.out.println("Join Date: " + driverDTO.getJoindate());
+
+//	            System.out.println("Image filename: " + image.getOriginalFilename());
+//	            System.out.println("Licence filename: " + licence.getOriginalFilename());
+
+	            // Call your service to save DriverDTO + files
+	            DriverDTO result = driverservice.update(driverDTO);
+
+	            if (result != null) {
+	                return ResponseEntity.status(HttpStatus.CREATED).body(result);
+	            } else {
+	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid request data");
+	        }
 	    }
-	}
 
 	/**
 	 * Endpoint to create/save a new driver.
